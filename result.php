@@ -17,6 +17,9 @@ try {
         throw new Exception('Missing answers');
     }
     $score = $manager->computeScore($_SESSION['answers']);
+
+    $results = $manager->correctIncorrect($_SESSION['answers']);
+
 } catch (Exception $e) {
     echo '<h1>An error occurred:</h1>';
     echo '<p>' . $e->getMessage() . '</p>';
@@ -31,24 +34,48 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Quiz</title>
 </head>
-<body>
+<style>
+    body{
+            text-align: left;
+            font-family: arial;
+    }
+    
+    h1{
+        font-size: 70px;
+    }
+
+    .unbold{
+        font-weight:normal;
+    }
+
+</style>
+<body style = "background-color: #1CFFE0;">
 
 <h1>Thank You</h1>
 
-<p style="color: gray">
-    You've completed the exam.
-</p>
-
 <h3>
-    Congratulations <?php echo $_SESSION['user_fullname']; ?>!
-    Your score is <?php echo $score; ?> out of <?php echo $manager->getQuestionSize() ;?></h3>
+    Congratulations <?php echo $_SESSION['user_fullname'];?> (<?php echo $_SESSION['user_email']; ?>)!</h3>
+    <h3 class="unbold">Score: <?php echo $score?>
+    out of <?php echo $manager->getQuestionSize() ;?>&nbsp;items
+    Your answers</h3>
+        <?php 
+            // eto yung return dun nacall dun sa QuestionManager.php sa result function
+            foreach ($results as $number => $answers) {
+                if($answers[1] == 1){
+                    echo "<li>".$answers[0]." (correct)</li>";
+                }else{
+                    echo "<li>".$answers[0]." (incorrect)</li>";
+                }
+            }
+        ?>
 
+<a href="download.php">Click here to download the results.</a>
 </body>
 </html>
-
 <!-- DEBUG MODE -->
 <pre>
 <?php
 var_dump($_SESSION);
 ?>
 </pre>
+
